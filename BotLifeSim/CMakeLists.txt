@@ -4,7 +4,7 @@ project(BotLifeSim)
 set(CMAKE_CXX_STANDARD 17)
 
 ## If you want to link SFML statically
-set(SFML_STATIC_LIBRARIES TRUE)
+#set(SFML_STATIC_LIBRARIES TRUE)
 
 find_package(SFML 2.5 COMPONENTS graphics audio REQUIRED)
 
