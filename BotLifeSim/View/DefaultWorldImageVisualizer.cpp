@@ -7,5 +7,6 @@ BotLifeSim::DefaultWorldImageVisualizer::DefaultWorldImageVisualizer()
 
 sf::Color BotLifeSim::DefaultWorldImageVisualizer::GetBotColor(BotLifeSim::Bot& bot)
 {
-	return sf::Color::White;
+	auto brightness = static_cast<sf::Uint8>(bot.GetEnergy() * UINT8_MAX / Bot::EnergyMax);
+	return sf::Color{brightness, brightness, brightness};
 }

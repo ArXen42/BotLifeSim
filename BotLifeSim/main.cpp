@@ -1,34 +1,17 @@
 #include <iostream>
+#include <thread>
+#include "SFML/System.hpp"
 #include "SFML/Graphics.hpp"
 #include "Model/World.hpp"
 #include "View/DefaultWorldImageVisualizer.hpp"
 
-constexpr sf::Uint32 TextureWidth = 1280, TextureHeight = 720;
+constexpr sf::Uint32            TextureWidth = 256, TextureHeight = 256;
+constexpr std::chrono::duration Delay        = std::chrono::milliseconds(1);
 
 int main()
 {
 	BotLifeSim::World world{
-			BotLifeSim::Bot{0, 1},
-			BotLifeSim::Bot{1, 4},
-			BotLifeSim::Bot{2, 5},
-			BotLifeSim::Bot{5, 20},
-			BotLifeSim::Bot{34, 12},
-			BotLifeSim::Bot{23, 42},
-			BotLifeSim::Bot{12, 24},
-			BotLifeSim::Bot{42, 0},
-			BotLifeSim::Bot{93, 55},
-			BotLifeSim::Bot{121, 63},
-			BotLifeSim::Bot{324, 525},
-			BotLifeSim::Bot{525, 333},
-			BotLifeSim::Bot{421, 222},
-			BotLifeSim::Bot{22, 111},
-			BotLifeSim::Bot{119, 192},
-			BotLifeSim::Bot{332, 899},
-			BotLifeSim::Bot{524, 1},
-			BotLifeSim::Bot{22, 2},
-			BotLifeSim::Bot{0, 4},
-			BotLifeSim::Bot{0, 10},
-			BotLifeSim::Bot{0, 19},
+			BotLifeSim::Bot{{TextureWidth / 2, TextureHeight / 2}}
 	};
 
 	sf::RenderWindow window(sf::VideoMode(TextureWidth, TextureHeight), "Bot life sim");
@@ -45,6 +28,7 @@ int main()
 
 	BotLifeSim::DefaultWorldImageVisualizer worldImageVisualizer{};
 
+	uint64_t stepNum = 0;
 	while (window.isOpen())
 	{
 		sf::Event event{};
@@ -54,8 +38,12 @@ int main()
 				window.close();
 		}
 
-		window.clear(sf::Color::Black);
+		std::cout << "Simulating step " << ++stepNum << std::endl;
+		world.SimulateStep();
 
+		std::this_thread::sleep_for(Delay);
+
+		window.clear(sf::Color::Black);
 		worldImageVisualizer.DrawWorld(world, image);
 		texture.update(image);
 		window.draw(sprite);

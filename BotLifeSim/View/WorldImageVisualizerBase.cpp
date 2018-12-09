@@ -12,7 +12,7 @@ void BotLifeSim::WorldImageVisualizerBase::DrawWorld(const BotLifeSim::World& wo
 
 	for (auto const& bot: world.GetBots())
 	{
-		image.setPixel(static_cast<sf::Uint32>(bot.GetX()), static_cast<sf::Uint32>(bot.GetY()),
+		image.setPixel(static_cast<sf::Uint32>(bot.GetPosition().X), static_cast<sf::Uint32>(bot.GetPosition().Y),
 		               sf::Color(UINT8_MAX, UINT8_MAX, UINT8_MAX));
 	}
 }

@@ -10,6 +10,9 @@ namespace BotLifeSim
 	public:
 		void DrawWorld(const World& world, sf::Image& image);
 
+		sf::Color GetBackgroundColor()
+		{ return _backgroundColor; };
+
 	protected:
 		WorldImageVisualizerBase() = default;
 
@@ -20,9 +23,6 @@ namespace BotLifeSim
 
 	private:
 		sf::Color _backgroundColor{0, 0, 0};
-
-		sf::Color GetBackgroundColor()
-		{ return _backgroundColor; };
 	};
 }
 

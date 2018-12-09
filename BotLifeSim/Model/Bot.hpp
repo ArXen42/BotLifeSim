@@ -1,25 +1,52 @@
 #pragma once
 
 #include <cstdint>
+#include <array>
+#include "BotCommand.hpp"
+#include "Types.hpp"
+#include "CellPosition.hpp"
 
 namespace BotLifeSim
 {
+	class CellInfo;
 
 	class Bot
 	{
 	public:
-		Bot(int64_t x, int64_t y) :
-				_x(x),
-				_y(y)
-		{}
+		static constexpr EnergyT EnergyMax     = UINT8_MAX;
+		static constexpr EnergyT EnergyDefault = EnergyMax / 2;
 
-		int64_t GetX() const
-		{ return _x; }
+		static constexpr std::size_t CommandsLength             = 64;
+		static constexpr std::size_t MaxCommandsExecutedPerStep = 32;
 
-		int64_t GetY() const
-		{ return _y; }
+		explicit Bot(const CellPosition& _position);
+
+		CellPosition GetPosition() const
+		{ return _position; }
+
+		EnergyT GetEnergy() const
+		{ return _energy; }
+
+		void SimulateStep(CellInfo& currentCellInfo);
+
+		Bot Divide(int64_t x, int64_t y);
 
 	private:
-		int64_t _x, _y;
+		enum class CommandExecutionResult
+		{
+			Terminal,
+			NonTerminal,
+			Jump
+		};
+
+	private:
+		CellPosition _position;
+		EnergyT      _energy{EnergyDefault};
+
+		std::array<BotCommand, CommandsLength> _commands{};
+		int64_t                                _registerValue{-1};
+
+	private:
+		CommandExecutionResult ExecuteCommand(size_t& currentCommandIndex, CellInfo& currentCellInfo);
 	};
 }
