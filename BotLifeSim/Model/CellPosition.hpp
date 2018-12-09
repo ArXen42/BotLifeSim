@@ -25,12 +25,13 @@ namespace BotLifeSim
 		void FitConstraints(int64_t xMax, int64_t yMax)
 		{
 			X %= xMax;
-			Y %= yMax;
 
 			if (X < 0)
 				X = xMax - X;
 			if (Y < 0)
 				Y = 0;
+			if (Y >= yMax)
+				Y = yMax - 1;
 		}
 	};
 

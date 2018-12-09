@@ -51,8 +51,8 @@ bool BotLifeSim::World::DivideOrKillBots()
 		int64_t x = botIt->GetPosition().X;
 		int64_t y = botIt->GetPosition().Y;
 
-		bool    canDivide = false;
-		int64_t newX      = -1, newY = -1;
+		bool         canDivide = false;
+		CellPosition newPosition{};
 
 		std::array<CellPosition, 8> positionsToCheck{
 				CellPosition{x, y - 1},
@@ -70,16 +70,16 @@ bool BotLifeSim::World::DivideOrKillBots()
 			if (!IsCellFilled(pos.X, pos.Y))
 				continue;
 
-			canDivide = true;
-			newX      = pos.X;
-			newY      = pos.Y;
+			canDivide   = true;
+			newPosition = pos;
 			break;
 		}
 
 		if (canDivide)
 		{
 //			std::cout << "Creating new bot at " << CellPosition{newX, newY} << std::endl;
-			auto newBot = botIt->Divide(newX, newY);
+			newPosition.FitConstraints(GetWorldWidth(), GetWorldHeight());
+			auto newBot = botIt->Divide(newPosition);
 			_bots.push_back(newBot);
 			return true;
 		}

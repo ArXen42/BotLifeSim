@@ -5,7 +5,13 @@
 namespace BotLifeSim
 {
 	Bot::Bot(const CellPosition& _position) : _position(_position)
-	{}
+	{
+		if (_position.X < 0)
+			throw std::invalid_argument("position.X < 0");
+
+		if (_position.Y < 0)
+			throw std::invalid_argument("position.Y < 0");
+	}
 
 	void Bot::SimulateStep(CellInfo& currentCellInfo)
 	{
@@ -31,12 +37,10 @@ namespace BotLifeSim
 		switch (command)
 		{
 			case BotCommand::Photosynthesis:
-				std::cout << _energy << std::endl;
 				if (luminance > EnergyMax - _energy)
 					_energy = EnergyMax;
 				else
 					_energy += luminance;
-				std::cout << std::to_string(_energy) << std::endl;
 				return CommandExecutionResult::Terminal;
 			case BotCommand::ReadLuminanceUp:
 				break;
@@ -64,10 +68,10 @@ namespace BotLifeSim
 		return CommandExecutionResult::NonTerminal;
 	}
 
-	Bot Bot::Divide(int64_t x, int64_t y)
+	Bot Bot::Divide(CellPosition const& position)
 	{
 		_energy -= EnergyDefault;
-		return Bot{{x, y}};
+		return Bot{position};
 	}
 }
 

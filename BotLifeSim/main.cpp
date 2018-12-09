@@ -5,26 +5,29 @@
 #include "Model/World.hpp"
 #include "View/DefaultWorldImageVisualizer.hpp"
 
-constexpr sf::Uint32            TextureWidth = 256, TextureHeight = 256;
-constexpr std::chrono::duration Delay        = std::chrono::milliseconds(1);
+constexpr std::chrono::duration Delay        = std::chrono::milliseconds(0);
 
 int main()
 {
 	BotLifeSim::World world{
-			BotLifeSim::Bot{{TextureWidth / 2, TextureHeight / 2}}
+			BotLifeSim::Bot{{16, 16}}
 	};
 
-	sf::RenderWindow window(sf::VideoMode(TextureWidth, TextureHeight), "Bot life sim");
+	auto const textureWidth  = static_cast<sf::Uint32>(world.GetWorldWidth());
+	auto const textureHeight = static_cast<sf::Uint32>(world.GetWorldHeight());
+
+	sf::RenderWindow window(sf::VideoMode(textureWidth, textureHeight), "Bot life sim");
 
 	sf::Texture texture;
-	texture.create(TextureWidth, TextureHeight);
+	texture.create(textureWidth, textureHeight);
 	texture.setSmooth(false);
 
 	sf::Image image{};
-	image.create(TextureWidth, TextureHeight);
+	image.create(textureWidth, textureHeight);
 
 	sf::Sprite sprite;
 	sprite.setTexture(texture);
+	sprite.setScale(4,4);
 
 	BotLifeSim::DefaultWorldImageVisualizer worldImageVisualizer{};
 
@@ -38,6 +41,7 @@ int main()
 				window.close();
 		}
 
+		std::cout << "World population: " << world.GetBots().size() << std::endl;
 		std::cout << "Simulating step " << ++stepNum << std::endl;
 		world.SimulateStep();
 

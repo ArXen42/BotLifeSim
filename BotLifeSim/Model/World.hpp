@@ -8,7 +8,7 @@ namespace BotLifeSim
 	class World
 	{
 	public:
-		static constexpr EnergyT LuminanceMax = Bot::EnergyDefault;
+		static constexpr EnergyT LuminanceMax = Bot::EnergyDefault / 4;
 
 		World(std::initializer_list<Bot> initialBots)
 				: _bots(initialBots)
@@ -18,10 +18,10 @@ namespace BotLifeSim
 		{ return _bots; }
 
 		const uint64_t GetWorldWidth() const
-		{ return 256; };
+		{ return 128; };
 
 		const uint64_t GetWorldHeight() const
-		{ return 256; }
+		{ return 92; }
 
 		bool IsCellFilled(int64_t x, int64_t y) const;
 

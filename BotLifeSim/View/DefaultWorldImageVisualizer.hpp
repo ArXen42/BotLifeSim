@@ -10,7 +10,7 @@ namespace BotLifeSim
 		DefaultWorldImageVisualizer();
 
 	private:
-		sf::Color GetBotColor(Bot& bot) override;
+		sf::Color GetBotColor(const Bot& bot) override;
 	};
 }
 

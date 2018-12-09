@@ -29,7 +29,7 @@ namespace BotLifeSim
 
 		void SimulateStep(CellInfo& currentCellInfo);
 
-		Bot Divide(int64_t x, int64_t y);
+		Bot Divide(CellPosition const& position);
 
 	private:
 		enum class CommandExecutionResult

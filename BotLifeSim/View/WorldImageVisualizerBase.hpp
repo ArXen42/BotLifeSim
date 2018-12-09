@@ -16,7 +16,7 @@ namespace BotLifeSim
 	protected:
 		WorldImageVisualizerBase() = default;
 
-		virtual sf::Color GetBotColor(Bot& bot) = 0;
+		virtual sf::Color GetBotColor(const Bot& bot) = 0;
 
 		void SetBackgroundColor(sf::Color color)
 		{ _backgroundColor = color; }
