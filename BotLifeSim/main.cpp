@@ -1,3 +1,6 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
+
 #include <iostream>
 #include <thread>
 #include "SFML/System.hpp"
@@ -5,7 +8,7 @@
 #include "Model/World.hpp"
 #include "View/DefaultWorldImageVisualizer.hpp"
 
-constexpr std::chrono::duration Delay        = std::chrono::milliseconds(0);
+constexpr auto Delay = std::chrono::milliseconds(0); // NOLINT(cert-err58-cpp)
 
 int main()
 {
@@ -27,7 +30,7 @@ int main()
 
 	sf::Sprite sprite;
 	sprite.setTexture(texture);
-	sprite.setScale(4,4);
+	sprite.setScale(4, 4);
 
 	BotLifeSim::DefaultWorldImageVisualizer worldImageVisualizer{};
 
