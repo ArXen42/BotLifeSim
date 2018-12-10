@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <array>
+#include <random>
 #include "BotCommand.hpp"
 #include "Types.hpp"
 #include "CellPosition.hpp"
@@ -13,8 +14,9 @@ namespace BotLifeSim
 	class Bot
 	{
 	public:
-		static constexpr EnergyT EnergyMax     = UINT8_MAX;
-		static constexpr EnergyT EnergyDefault = EnergyMax / 2;
+		static constexpr EnergyT     EnergyMax     = UINT8_MAX;
+		static constexpr EnergyT     EnergyDefault = EnergyMax / 2;
+		static constexpr std::size_t MutationsMax  = 2;
 
 		static constexpr std::size_t CommandsLength             = 64;
 		static constexpr std::size_t MaxCommandsExecutedPerStep = 32;
@@ -29,14 +31,13 @@ namespace BotLifeSim
 
 		void SimulateStep(CellInfo& currentCellInfo);
 
-		Bot Divide(CellPosition const& position);
+		Bot Divide(CellPosition const& position, std::mt19937& mt19937);
 
 	private:
 		enum class CommandExecutionResult
 		{
 			Terminal,
 			NonTerminal,
-			Jump
 		};
 
 	private:
@@ -44,9 +45,11 @@ namespace BotLifeSim
 		EnergyT      _energy{EnergyDefault};
 
 		std::array<BotCommand, CommandsLength> _commands{};
-		int64_t                                _registerValue{-1};
+		uint64_t                                _registerValue{0};
 
 	private:
 		CommandExecutionResult ExecuteCommand(size_t& currentCommandIndex, CellInfo& currentCellInfo);
+
+		void TryMove(CellInfo& currentCellInfo);
 	};
 }

@@ -13,24 +13,32 @@ namespace BotLifeSim
 	public:
 		CellInfo(World* _world, const CellPosition& _position, EnergyT _luminance);
 
-		EnergyT GetLuminance()
+		CellPosition GetPosition() const
+		{
+			return _position;
+		}
+
+		EnergyT GetLuminance() const
 		{ return _luminance; }
 
-		CellInfo GetCellUp();
+		CellInfo GetCellUp() const;
 
-		CellInfo GetCellUpRight();
+		CellInfo GetCellUpRight() const;
 
-		CellInfo GetCellRight();
+		CellInfo GetCellRight() const;
 
-		CellInfo GetCellDownRight();
+		CellInfo GetCellDownRight() const;
 
-		CellInfo GetCellDown();
+		CellInfo GetCellDown() const;
 
-		CellInfo GetCellDownLeft();
+		CellInfo GetCellDownLeft() const;
 
-		CellInfo GetCellLeft();
+		CellInfo GetCellLeft() const;
 
-		CellInfo GetCellLeftUp();
+		CellInfo GetCellUpLeft() const;
+
+		bool IsFilled() const;
+
 
 	private:
 		World* _world;

@@ -16,7 +16,8 @@ namespace BotLifeSim
 		ReadLuminanceLeft,
 		ReadLuminanceUpLeft,
 		Move,
-		Jump
+		Jump,
+		LastCommand = Jump
 	};
 }
 

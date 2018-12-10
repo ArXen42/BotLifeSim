@@ -10,26 +10,31 @@ BotLifeSim::CellInfo::CellInfo(BotLifeSim::World* _world, const BotLifeSim::Cell
                                                                  _luminance(_luminance)
 {}
 
-BotLifeSim::CellInfo BotLifeSim::CellInfo::GetCellUp()
+BotLifeSim::CellInfo BotLifeSim::CellInfo::GetCellUp() const
 { return _world->GetCellInfo(_position.X, _position.Y - 1); }
 
-BotLifeSim::CellInfo BotLifeSim::CellInfo::GetCellUpRight()
+BotLifeSim::CellInfo BotLifeSim::CellInfo::GetCellUpRight() const
 { return _world->GetCellInfo(_position.X + 1, _position.Y - 1); }
 
-BotLifeSim::CellInfo BotLifeSim::CellInfo::GetCellRight()
+BotLifeSim::CellInfo BotLifeSim::CellInfo::GetCellRight() const
 { return _world->GetCellInfo(_position.X + 1, _position.Y); }
 
-BotLifeSim::CellInfo BotLifeSim::CellInfo::GetCellDownRight()
+BotLifeSim::CellInfo BotLifeSim::CellInfo::GetCellDownRight() const
 { return _world->GetCellInfo(_position.X + 1, _position.Y + 1); }
 
-BotLifeSim::CellInfo BotLifeSim::CellInfo::GetCellDown()
+BotLifeSim::CellInfo BotLifeSim::CellInfo::GetCellDown() const
 { return _world->GetCellInfo(_position.X, _position.Y + 1); }
 
-BotLifeSim::CellInfo BotLifeSim::CellInfo::GetCellDownLeft()
+BotLifeSim::CellInfo BotLifeSim::CellInfo::GetCellDownLeft() const
 { return _world->GetCellInfo(_position.X - 1, _position.Y + 1); }
 
-BotLifeSim::CellInfo BotLifeSim::CellInfo::GetCellLeft()
+BotLifeSim::CellInfo BotLifeSim::CellInfo::GetCellLeft() const
 { return _world->GetCellInfo(_position.X - 1, _position.Y); }
 
-BotLifeSim::CellInfo BotLifeSim::CellInfo::GetCellLeftUp()
+BotLifeSim::CellInfo BotLifeSim::CellInfo::GetCellUpLeft() const
 { return _world->GetCellInfo(_position.X - 1, _position.Y - 1); }
+
+bool BotLifeSim::CellInfo::IsFilled() const
+{
+	return _world->IsCellFilled(_position.X, _position.Y);
+}

@@ -46,11 +46,13 @@ bool BotLifeSim::World::DivideOrKillBots()
 {
 	for (auto botIt = _bots.begin(); botIt != _bots.end(); ++botIt)
 	{
+		if (botIt->GetEnergy() == 0)
+			botIt = _bots.erase(botIt);
+
 		if (botIt->GetEnergy() != Bot::EnergyMax)
 			continue;
 
 		auto const& position = botIt->GetPosition();
-//		std::cout << "Detected bot with max energy at " << position << ", trying to divide";
 		int64_t x = botIt->GetPosition().X;
 		int64_t y = botIt->GetPosition().Y;
 
@@ -80,16 +82,15 @@ bool BotLifeSim::World::DivideOrKillBots()
 
 		if (canDivide)
 		{
-//			std::cout << "Creating new bot at " << CellPosition{newX, newY} << std::endl;
 			newPosition.FitConstraints(GetWorldWidth(), GetWorldHeight());
-			auto newBot = botIt->Divide(newPosition);
+			auto newBot = botIt->Divide(newPosition, mt19937);
 			_bots.push_back(newBot);
 			return true;
 		}
 		else
 		{
-//			std::cout << "Killing bot at " << botIt->GetPosition() << std::endl;
-			botIt = _bots.erase(botIt);
+			_bots.erase(botIt);
+			return true;
 		}
 	}
 

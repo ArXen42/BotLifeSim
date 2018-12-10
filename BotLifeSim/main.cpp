@@ -12,9 +12,7 @@ constexpr auto Delay = std::chrono::milliseconds(0); // NOLINT(cert-err58-cpp)
 
 int main()
 {
-	BotLifeSim::World world{
-			BotLifeSim::Bot{{16, 16}}
-	};
+	BotLifeSim::World world({BotLifeSim::Bot{{16, 16}}}, 42);
 
 	auto const textureWidth  = static_cast<sf::Uint32>(world.GetWorldWidth());
 	auto const textureHeight = static_cast<sf::Uint32>(world.GetWorldHeight());
