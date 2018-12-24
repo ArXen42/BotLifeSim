@@ -14,7 +14,7 @@ int main()
 {
 	using namespace BotLifeSim;
 
-	BotLifeSim::World world{142};
+	BotLifeSim::World world{42};
 
 	auto const textureWidth  = static_cast<sf::Uint32>(World::WorldWidth);
 	auto const textureHeight = static_cast<sf::Uint32>(World::WorldHeight);
@@ -30,7 +30,7 @@ int main()
 
 	sf::Sprite sprite;
 	sprite.setTexture(texture);
-	sprite.setScale(4, 4);
+	sprite.setScale(2, 2);
 
 	BotLifeSim::DefaultWorldImageVisualizer worldImageVisualizer{};
 
@@ -47,6 +47,7 @@ int main()
 		std::cout << "World population: " << world.GetBots().size() << std::endl;
 		std::cout << "Simulating step " << ++stepNum << std::endl;
 		world.SimulateStep();
+
 
 		std::this_thread::sleep_for(Delay);
 

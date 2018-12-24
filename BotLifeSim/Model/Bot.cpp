@@ -13,11 +13,10 @@ namespace BotLifeSim
 
 	void Bot::SimulateStep()
 	{
-		size_t currentCommandIndex = 0;
 
 		for (auto i = 0; i < MaxCommandsExecutedPerStep; ++i)
 		{
-			auto result = ExecuteCommand(currentCommandIndex);
+			auto result = ExecuteCommand(_currentCommandIndex);
 			if (result == CommandExecutionResult::Terminal)
 				return;
 		}

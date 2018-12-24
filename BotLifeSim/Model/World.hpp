@@ -12,28 +12,11 @@ namespace BotLifeSim
 	{
 	public:
 		static constexpr EnergyT  LuminanceMax = Bot::EnergyDefault / 4;
-		static constexpr uint64_t WorldWidth   = 160;
-		static constexpr uint64_t WorldHeight  = 160;
+		static constexpr EnergyT  EnergyDrain  = Bot::EnergyDefault / 48;
+		static constexpr uint64_t WorldWidth   = 150;
+		static constexpr uint64_t WorldHeight  = 150;
 
-		explicit World(int64_t seed) : mt19937{seed}
-		{
-			for (size_t y = 0; y < WorldHeight; y++)
-			{
-				auto& row = _cells[y];
-
-				for (size_t x = 0; x < WorldWidth; x++)
-				{
-					row.emplace_back(CellInfo{this, {x, y}, static_cast<EnergyT>(y * LuminanceMax / WorldHeight)});
-				}
-				std::cout << "Initialized row" << y << ": " << row.size() << std::endl;
-			}
-
-			auto* cell     = GetCellInfo(WorldWidth / 2, WorldHeight / 2);
-			auto& firstBot = _bots.emplace_back(Bot{cell});
-
-			cell->SetBot(&firstBot);
-
-		}
+		explicit World(int64_t seed);
 
 		std::vector<Bot> const& GetBots() const
 		{ return _bots; }

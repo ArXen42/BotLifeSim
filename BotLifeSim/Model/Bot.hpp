@@ -29,6 +29,14 @@ namespace BotLifeSim
 		EnergyT GetEnergy() const
 		{ return _energy; }
 
+		void DrainEnergy(EnergyT drain)
+		{
+			if (drain > _energy)
+				_energy = 0;
+			else
+				_energy -= drain;
+		}
+
 		void SimulateStep();
 
 		Bot Divide(CellInfo* destinationCell, std::mt19937& mt19937);
@@ -43,6 +51,7 @@ namespace BotLifeSim
 	private:
 		CellInfo* _currentCell;
 		EnergyT _energy{EnergyDefault};
+		size_t  _currentCommandIndex                            = 0;
 
 		std::array<BotCommand, CommandsLength> _commands{};
 		uint64_t                               _registerValue{0};
@@ -53,5 +62,6 @@ namespace BotLifeSim
 		void SetRegisterValueToLuminanceIfNotNull(CellInfo* cellInfo);
 
 		void TryMove();
+
 	};
 }

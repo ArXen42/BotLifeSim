@@ -14,6 +14,11 @@ void BotLifeSim::World::SimulateStep()
 
 	while (DivideOrKillBots())
 	{}
+
+	for (auto& bot: _bots)
+	{
+		bot.DrainEnergy(EnergyDrain);
+	}
 }
 
 bool BotLifeSim::World::DivideOrKillBots()
@@ -79,4 +84,24 @@ bool BotLifeSim::World::DivideOrKillBots()
 	}
 
 	return false;
+}
+
+BotLifeSim::World::World(int64_t seed) : mt19937{seed}
+{
+	for (size_t y = 0; y < WorldHeight; y++)
+	{
+		auto& row = _cells[y];
+
+		for (size_t x = 0; x < WorldWidth; x++)
+		{
+			row.emplace_back(CellInfo{this, {x, y}, static_cast<EnergyT>((WorldHeight - y) * LuminanceMax / WorldHeight)});
+		}
+		std::cout << "Initialized row" << y << ": " << row.size() << std::endl;
+	}
+
+	auto* cell     = GetCellInfo(WorldWidth / 2, WorldHeight / 2);
+	auto& firstBot = _bots.emplace_back(Bot{cell});
+
+	cell->SetBot(&firstBot);
+
 }
