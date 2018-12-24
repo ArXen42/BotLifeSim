@@ -8,8 +8,8 @@ namespace BotLifeSim
 	class CellPosition
 	{
 	public:
-		int64_t X;
-		int64_t Y;
+		uint64_t X;
+		uint64_t Y;
 
 		bool operator==(const CellPosition& rhs) const
 		{
@@ -20,18 +20,6 @@ namespace BotLifeSim
 		bool operator!=(const CellPosition& rhs) const
 		{
 			return !(rhs == *this);
-		}
-
-		void FitConstraints(int64_t xMax, int64_t yMax)
-		{
-			X %= xMax;
-
-			if (X < 0)
-				X = xMax - X;
-			if (Y < 0)
-				Y = 0;
-			if (Y >= yMax)
-				Y = yMax - 1;
 		}
 	};
 

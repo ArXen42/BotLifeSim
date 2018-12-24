@@ -9,37 +9,11 @@ void BotLifeSim::World::SimulateStep()
 {
 	for (auto& bot: _bots)
 	{
-		auto cell = GetCellInfo(bot.GetPosition().X, bot.GetPosition().Y);
-		bot.SimulateStep(cell);
+		bot.SimulateStep();
 	}
 
 	while (DivideOrKillBots())
 	{}
-}
-
-BotLifeSim::CellInfo BotLifeSim::World::GetCellInfo(int64_t x, int64_t y)
-{
-	CellPosition position{x, y};
-	position.FitConstraints(GetWorldWidth(), GetWorldHeight());
-
-	auto luminance = static_cast<EnergyT>(y * LuminanceMax / GetWorldHeight());
-
-	CellInfo cell(this, position, luminance);
-	return cell;
-}
-
-bool BotLifeSim::World::IsCellFilled(int64_t x, int64_t y) const
-{
-	CellPosition checkedPosition{x, y};
-	checkedPosition.FitConstraints(GetWorldWidth(), GetWorldHeight());
-
-	for (auto& bot: _bots)
-	{
-		if (bot.GetPosition() == checkedPosition)
-			return false;
-	}
-
-	return true;
 }
 
 bool BotLifeSim::World::DivideOrKillBots()
@@ -52,12 +26,11 @@ bool BotLifeSim::World::DivideOrKillBots()
 		if (botIt->GetEnergy() != Bot::EnergyMax)
 			continue;
 
-		auto const& position = botIt->GetPosition();
-		int64_t x = botIt->GetPosition().X;
-		int64_t y = botIt->GetPosition().Y;
+		auto const& position = botIt->GetCell()->GetPosition();
+		uint64_t x = position.X;
+		uint64_t y = position.Y;
 
-		bool         canDivide = false;
-		CellPosition newPosition{};
+		bool canDivide = false;
 
 		std::array<CellPosition, 8> positionsToCheck{
 				CellPosition{x, y - 1},
@@ -70,26 +43,37 @@ bool BotLifeSim::World::DivideOrKillBots()
 				CellPosition{x - 1, y - 1},
 		};
 
+		CellInfo* newCell = nullptr;
+
 		for (auto& pos: positionsToCheck)
 		{
-			if (!IsCellFilled(pos.X, pos.Y))
+			auto cell = GetCellInfo(pos);
+			if (cell == nullptr)
 				continue;
 
-			canDivide   = true;
-			newPosition = pos;
+			if (!cell->IsAccessible())
+				continue;
+
+			canDivide = true;
+			newCell   = cell;
 			break;
 		}
 
 		if (canDivide)
 		{
-			newPosition.FitConstraints(GetWorldWidth(), GetWorldHeight());
-			auto newBot = botIt->Divide(newPosition, mt19937);
+			auto newBot = botIt->Divide(newCell, mt19937);
 			_bots.push_back(newBot);
+			auto& newBotPushed = _bots[_bots.size() - 1];
+
+			newBot.GetCell()->SetBot(&newBotPushed);
+
 			return true;
 		}
 		else
 		{
 			_bots.erase(botIt);
+			botIt->GetCell()->RemoveBot();
+
 			return true;
 		}
 	}

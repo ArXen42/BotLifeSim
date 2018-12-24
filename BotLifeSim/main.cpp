@@ -12,10 +12,12 @@ constexpr auto Delay = std::chrono::milliseconds(0); // NOLINT(cert-err58-cpp)
 
 int main()
 {
-	BotLifeSim::World world({BotLifeSim::Bot{{16, 16}}}, 42);
+	using namespace BotLifeSim;
 
-	auto const textureWidth  = static_cast<sf::Uint32>(world.GetWorldWidth());
-	auto const textureHeight = static_cast<sf::Uint32>(world.GetWorldHeight());
+	BotLifeSim::World world{142};
+
+	auto const textureWidth  = static_cast<sf::Uint32>(World::WorldWidth);
+	auto const textureHeight = static_cast<sf::Uint32>(World::WorldHeight);
 
 	sf::RenderWindow window(sf::VideoMode(textureWidth, textureHeight), "Bot life sim");
 

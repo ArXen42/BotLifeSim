@@ -8,42 +8,50 @@ namespace BotLifeSim
 {
 	class World;
 
+	class Bot;
+
 	class CellInfo
 	{
 	public:
-		CellInfo(World* _world, const CellPosition& _position, EnergyT _luminance);
+		CellInfo(World* world, const CellPosition& position, EnergyT luminance);
 
 		CellPosition GetPosition() const
-		{
-			return _position;
-		}
+		{ return _position; }
 
 		EnergyT GetLuminance() const
 		{ return _luminance; }
 
-		CellInfo GetCellUp() const;
+		CellInfo* const GetCellUp() const;
 
-		CellInfo GetCellUpRight() const;
+		CellInfo* const GetCellUpRight() const;
 
-		CellInfo GetCellRight() const;
+		CellInfo* const GetCellRight() const;
 
-		CellInfo GetCellDownRight() const;
+		CellInfo* const GetCellDownRight() const;
 
-		CellInfo GetCellDown() const;
+		CellInfo* const GetCellDown() const;
 
-		CellInfo GetCellDownLeft() const;
+		CellInfo* const GetCellDownLeft() const;
 
-		CellInfo GetCellLeft() const;
+		CellInfo* const GetCellLeft() const;
 
-		CellInfo GetCellUpLeft() const;
+		CellInfo* const GetCellUpLeft() const;
 
-		bool IsFilled() const;
+		bool IsAccessible() const
+		{ return _bot == nullptr; }
 
+		void RemoveBot()
+		{ _bot = nullptr; }
+
+		void SetBot(Bot* bot)
+		{ _bot = bot; }
 
 	private:
 		World* _world;
-		CellPosition _position;
-		EnergyT      _luminance;
+		const CellPosition _position;
+		const EnergyT      _luminance;
+
+		Bot* _bot;
 	};
 }
 

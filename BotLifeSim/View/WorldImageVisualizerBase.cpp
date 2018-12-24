@@ -5,9 +5,9 @@
 
 void BotLifeSim::WorldImageVisualizerBase::DrawWorld(const BotLifeSim::World& world, sf::Image& image)
 {
-	for (sf::Uint32 x = 0; x < world.GetWorldWidth(); x++)
+	for (sf::Uint32 x = 0; x < World::WorldWidth; x++)
 	{
-		for (sf::Uint32 y = 0; y < world.GetWorldHeight(); y++)
+		for (sf::Uint32 y = 0; y < World::WorldHeight; y++)
 		{
 			image.setPixel(x, y, GetBackgroundColor());
 		}
@@ -15,7 +15,7 @@ void BotLifeSim::WorldImageVisualizerBase::DrawWorld(const BotLifeSim::World& wo
 
 	for (auto const& bot: world.GetBots())
 	{
-		image.setPixel(static_cast<sf::Uint32>(bot.GetPosition().X), static_cast<sf::Uint32>(bot.GetPosition().Y),
+		image.setPixel(static_cast<sf::Uint32>(bot.GetCell()->GetPosition().X), static_cast<sf::Uint32>(bot.GetCell()->GetPosition().Y),
 		               GetBotColor(bot));
 	}
 }

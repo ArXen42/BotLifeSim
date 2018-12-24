@@ -7,32 +7,28 @@
 
 namespace BotLifeSim
 {
-	Bot::Bot(const CellPosition& _position) : _position(_position)
-	{
-		if (_position.X < 0)
-			throw std::invalid_argument("position.X < 0");
 
-		if (_position.Y < 0)
-			throw std::invalid_argument("position.Y < 0");
-	}
+	Bot::Bot(CellInfo* currentCellInfo) : _currentCell(currentCellInfo)
+	{}
 
-	void Bot::SimulateStep(CellInfo& currentCellInfo)
+	void Bot::SimulateStep()
 	{
 		size_t currentCommandIndex = 0;
 
 		for (auto i = 0; i < MaxCommandsExecutedPerStep; ++i)
 		{
-			auto result = ExecuteCommand(currentCommandIndex, currentCellInfo);
+			auto result = ExecuteCommand(currentCommandIndex);
 			if (result == CommandExecutionResult::Terminal)
 				return;
 		}
 	}
 
-	Bot::CommandExecutionResult Bot::ExecuteCommand(size_t& currentCommandIndex, CellInfo& currentCellInfo)
+	Bot::CommandExecutionResult Bot::ExecuteCommand(size_t& currentCommandIndex)
 	{
 		auto command = _commands[currentCommandIndex];
 
-		auto luminance = currentCellInfo.GetLuminance();
+		auto luminance = _currentCell->GetLuminance();
+
 		switch (command)
 		{
 			case BotCommand::Photosynthesis:
@@ -42,31 +38,31 @@ namespace BotLifeSim
 					_energy += luminance;
 				return CommandExecutionResult::Terminal;
 			case BotCommand::ReadLuminanceUp:
-				_registerValue = currentCellInfo.GetCellUp().GetLuminance();
+				SetRegisterValueToLuminanceIfNotNull(_currentCell->GetCellUp());
 				break;
 			case BotCommand::ReadLuminanceUpRight:
-				_registerValue = currentCellInfo.GetCellUpRight().GetLuminance();
+				SetRegisterValueToLuminanceIfNotNull(_currentCell->GetCellUpRight());
 				break;
 			case BotCommand::ReadLuminanceRight:
-				_registerValue = currentCellInfo.GetCellRight().GetLuminance();
+				SetRegisterValueToLuminanceIfNotNull(_currentCell->GetCellRight());
 				break;
 			case BotCommand::ReadLuminanceDownRight:
-				_registerValue = currentCellInfo.GetCellDownRight().GetLuminance();
+				SetRegisterValueToLuminanceIfNotNull(_currentCell->GetCellDownRight());
 				break;
 			case BotCommand::ReadLuminanceDown:
-				_registerValue = currentCellInfo.GetCellDown().GetLuminance();
+				SetRegisterValueToLuminanceIfNotNull(_currentCell->GetCellDown());
 				break;
 			case BotCommand::ReadLuminanceDownLeft:
-				_registerValue = currentCellInfo.GetCellDownLeft().GetLuminance();
+				SetRegisterValueToLuminanceIfNotNull(_currentCell->GetCellDownLeft());
 				break;
 			case BotCommand::ReadLuminanceLeft:
-				_registerValue = currentCellInfo.GetCellLeft().GetLuminance();
+				SetRegisterValueToLuminanceIfNotNull(_currentCell->GetCellLeft());
 				break;
 			case BotCommand::ReadLuminanceUpLeft:
-				_registerValue = currentCellInfo.GetCellUpLeft().GetLuminance();
+				SetRegisterValueToLuminanceIfNotNull(_currentCell->GetCellUpLeft());
 				break;
 			case BotCommand::Move:
-				TryMove(currentCellInfo);
+				TryMove();
 				return CommandExecutionResult::Terminal;
 			case BotCommand::Jump:
 				currentCommandIndex = (currentCommandIndex + _registerValue) % CommandsLength;
@@ -77,14 +73,14 @@ namespace BotLifeSim
 		return CommandExecutionResult::NonTerminal;
 	}
 
-	Bot Bot::Divide(CellPosition const& position, std::mt19937& mt19937)
+	Bot Bot::Divide(CellInfo* destinationCell, std::mt19937& mt19937)
 	{
 		static std::uniform_int_distribution<int64_t>  mutationsCountDistribution{1, MutationsMax + 1};
 		static std::uniform_int_distribution<uint64_t> mutationPositionDistribution{0, CommandsLength};
 		static std::uniform_int_distribution<uint64_t> mutationCommandDistribution{0, static_cast<uint64_t>(BotCommand::LastCommand)};
 
 		_energy -= EnergyDefault;
-		Bot newBot{position};
+		Bot newBot{destinationCell};
 		newBot._commands = _commands;
 
 		auto      mutationsCount = mutationsCountDistribution(mt19937);
@@ -99,43 +95,55 @@ namespace BotLifeSim
 		return newBot;
 	}
 
-	void Bot::TryMove(CellInfo& currentCellInfo)
+	void Bot::TryMove()
 	{
-		CellInfo newCell{nullptr, {-1, -1}, 0};
+		CellInfo* newCell = nullptr;
 		switch (_registerValue % 8)
 		{
 			case 0:
-				newCell = currentCellInfo.GetCellUp();
+				newCell = _currentCell->GetCellUp();
 				break;
 			case 1:
-				newCell = currentCellInfo.GetCellUpRight();
+				newCell = _currentCell->GetCellUpRight();
 				break;
 			case 2:
-				newCell = currentCellInfo.GetCellRight();
+				newCell = _currentCell->GetCellRight();
 				break;
 			case 3:
-				newCell = currentCellInfo.GetCellDownRight();
+				newCell = _currentCell->GetCellDownRight();
 				break;
 			case 4:
-				newCell = currentCellInfo.GetCellDown();
+				newCell = _currentCell->GetCellDown();
 				break;
 			case 5:
-				newCell = currentCellInfo.GetCellDownLeft();
+				newCell = _currentCell->GetCellDownLeft();
 				break;
 			case 6:
-				newCell = currentCellInfo.GetCellLeft();
+				newCell = _currentCell->GetCellLeft();
 				break;
 			case 7:
-				newCell = currentCellInfo.GetCellUpLeft();
+				newCell = _currentCell->GetCellUpLeft();
 				break;
 			default:
 				return;
 		}
 
-		if (!newCell.IsFilled())
-		{
-			_position = newCell.GetPosition();
-		}
+		if (newCell == nullptr)
+			return;
+
+		if (!newCell->IsAccessible())
+			return;
+
+		_currentCell->RemoveBot();
+		newCell->SetBot(this);
+		_currentCell = newCell;
 	}
+
+	void Bot::SetRegisterValueToLuminanceIfNotNull(CellInfo* cellInfo)
+	{
+		if (cellInfo != nullptr)
+			_registerValue = cellInfo->GetLuminance();
+	}
+
 }
 
