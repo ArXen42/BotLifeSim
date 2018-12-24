@@ -76,8 +76,8 @@ bool BotLifeSim::World::DivideOrKillBots()
 		}
 		else
 		{
-			_bots.erase(botIt);
 			botIt->GetCell()->RemoveBot();
+			_bots.erase(botIt);
 
 			return true;
 		}
