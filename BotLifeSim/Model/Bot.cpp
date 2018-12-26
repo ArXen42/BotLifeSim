@@ -32,9 +32,10 @@ namespace BotLifeSim
 		{
 			case BotCommand::Photosynthesis:
 				if (luminance > EnergyMax - _energy)
-					_energy = EnergyMax;
+					_energy         = EnergyMax;
 				else
 					_energy += luminance;
+				currentCommandIndex = (currentCommandIndex + 1) % CommandsLength;
 				return CommandExecutionResult::Terminal;
 			case BotCommand::ReadLuminanceUp:
 				SetRegisterValueToLuminanceIfNotNull(_currentCell->GetCellUp());
@@ -62,6 +63,7 @@ namespace BotLifeSim
 				break;
 			case BotCommand::Move:
 				TryMove();
+				currentCommandIndex = (currentCommandIndex + 1) % CommandsLength;
 				return CommandExecutionResult::Terminal;
 			case BotCommand::Jump:
 				currentCommandIndex = (currentCommandIndex + _registerValue) % CommandsLength;
