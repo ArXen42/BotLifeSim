@@ -24,7 +24,8 @@ namespace BotLifeSim
 		std::array<std::vector<CellInfo>, WorldHeight>& GetCells()
 		{ return _cells; }
 
-		void SimulateStep();
+		CellInfo* GetCellInfo(const CellPosition& position)
+		{ return GetCellInfo(position.X, position.Y); }
 
 		CellInfo* GetCellInfo(uint64_t x, uint64_t y)
 		{
@@ -37,10 +38,11 @@ namespace BotLifeSim
 			return nullptr;
 		}
 
-		CellInfo* GetCellInfo(const CellPosition& position)
-		{
-			return GetCellInfo(position.X, position.Y);
-		}
+		void SimulateStep();
+
+		void EmplaceBot(Bot&& bot);
+
+		void KillBot(std::vector<Bot>::iterator botIt);
 
 	private:
 		std::vector<Bot>                               _bots;

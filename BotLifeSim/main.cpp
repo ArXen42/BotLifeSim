@@ -30,7 +30,7 @@ int main()
 
 	sf::Sprite sprite;
 	sprite.setTexture(texture);
-	sprite.setScale(2, 2);
+	sprite.setScale(3, 3);
 
 	BotLifeSim::DefaultWorldImageVisualizer worldImageVisualizer{};
 

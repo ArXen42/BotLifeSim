@@ -18,8 +18,8 @@ namespace BotLifeSim
 		static constexpr EnergyT     EnergyDefault = EnergyMax / 2;
 		static constexpr std::size_t MutationsMax  = 2;
 
-		static constexpr std::size_t CommandsLength             = 32;
-		static constexpr std::size_t MaxCommandsExecutedPerStep = 16;
+		static constexpr std::size_t CommandsLength             = 16;
+		static constexpr std::size_t MaxCommandsExecutedPerStep = 8;
 
 		explicit Bot(CellInfo* currentCellInfo);
 

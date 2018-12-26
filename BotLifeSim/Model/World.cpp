@@ -26,7 +26,10 @@ bool BotLifeSim::World::DivideOrKillBots()
 	for (auto botIt = _bots.begin(); botIt != _bots.end(); ++botIt)
 	{
 		if (botIt->GetEnergy() == 0)
-			botIt = _bots.erase(botIt);
+		{
+			KillBot(botIt);
+			return true;
+		}
 
 		if (botIt->GetEnergy() != Bot::EnergyMax)
 			continue;
@@ -66,19 +69,12 @@ bool BotLifeSim::World::DivideOrKillBots()
 
 		if (canDivide)
 		{
-			auto newBot = botIt->Divide(newCell, mt19937);
-			_bots.push_back(newBot);
-			auto& newBotPushed = _bots[_bots.size() - 1];
-
-			newBot.GetCell()->SetBot(&newBotPushed);
-
+			EmplaceBot(botIt->Divide(newCell, mt19937));
 			return true;
 		}
 		else
 		{
-			botIt->GetCell()->RemoveBot();
-			_bots.erase(botIt);
-
+			KillBot(botIt);
 			return true;
 		}
 	}
@@ -99,9 +95,19 @@ BotLifeSim::World::World(int64_t seed) : mt19937{seed}
 		std::cout << "Initialized row" << y << ": " << row.size() << std::endl;
 	}
 
-	auto* cell     = GetCellInfo(WorldWidth / 2, WorldHeight / 2);
-	auto& firstBot = _bots.emplace_back(Bot{cell});
+	auto* cell = GetCellInfo(WorldWidth / 2, WorldHeight / 2);
+	EmplaceBot(Bot{cell});
+}
 
-	cell->SetBot(&firstBot);
+void BotLifeSim::World::EmplaceBot(BotLifeSim::Bot&& bot)
+{
+	_bots.emplace_back(bot);
+	auto emplacedBot = &_bots.back();
+	emplacedBot->GetCell()->SetBot(emplacedBot);
+}
 
+void BotLifeSim::World::KillBot(std::vector<Bot>::iterator botIt)
+{
+	botIt->GetCell()->RemoveBot();
+	_bots.erase(botIt);
 }
